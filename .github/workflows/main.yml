@@ -1,0 +1,43 @@
+name: Package Management Pipeline
+
+on:
+  workflow_dispatch:
+    inputs:
+      DEPLOY:
+        description: 'Set to 1 to install package, 0 to skip'
+        required: true
+        default: '0'  # Default value if not provided
+        type: string  # Input is treated as a string
+      DESTROY:
+        description: 'Set to 1 to uninstall package, 0 to skip'
+        required: true
+        default: '0'  # Default value if not provided
+        type: string  # Input is treated as a string
+
+jobs:
+  install_package:
+    if: ${{ github.event.inputs.DEPLOY == '1' }}
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Install curl package
+      run: |
+        echo "Installing curl..."
+        sudo apt-get update
+        sudo apt-get install -y curl
+
+  uninstall_package:
+    if: ${{ github.event.inputs.DESTROY == '1' }}
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Uninstall curl package
+      run: |
+        echo "Uninstalling curl..."
+        sudo apt-get remove -y curl
